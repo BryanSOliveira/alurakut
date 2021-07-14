@@ -23,6 +23,28 @@ function ProfileSidebar(propriedades) {
   )
 }
 
+function ProfileRelationsBox(propriedades) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {propriedades.title} ({propriedades.items.length})
+      </h2>
+      {/* <ul>
+        {seguidores.map((itemAtual) => {
+          return (
+            <li id={itemAtual}>
+              <a href={`https://github.com/${itemAtual}.png`}>
+                <img src={itemAtual.image} />
+                <span>{itemAtual.title}</span>
+              </a>
+            </li>
+          )
+        })}
+      </ul> */}
+    </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
   const usuarioAleatorio = 'BryanSOliveira';
   const [comunidades, setComunidades] = React.useState([{
@@ -41,6 +63,17 @@ export default function Home() {
     'marcobrunodev', 
     'felipefialho'
   ]
+  const [seguidores, setSeguidores] = React.useState([]);
+
+  React.useEffect(function() { // fora do UseEffect teremos um looping infinito
+    fetch('https://api.github.com/users/peas/followers')
+    .then(function(respostaDoServidor) {
+      return respostaDoServidor.json();
+    })
+    .then(function(respostaCompleta) {
+      setSeguidores(respostaCompleta);
+    })
+  }, [])
 
   return (
     <>
@@ -100,6 +133,7 @@ export default function Home() {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
+          <ProfileRelationsBox title="Seguidores" items={seguidores}/>
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
